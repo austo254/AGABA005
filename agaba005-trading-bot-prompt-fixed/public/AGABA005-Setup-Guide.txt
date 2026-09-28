@@ -1,0 +1,77 @@
+================================================================================
+AGABA005 - MT5 BRIDGE SETUP GUIDE
+================================================================================
+
+This guide walks you through connecting the AGABA005 web engine to your MT5
+terminal (demo or live) using the Agaba005Bridge.mq5 Expert Advisor.
+
+--------------------------------------------------------------------------------
+PHASE 1: PREPARE THE WEB ENGINE
+--------------------------------------------------------------------------------
+1. Ensure your AGABA005 web app is running and reachable via a public HTTPS URL 
+   (e.g., https://your-agaba-app.com). 
+2. Note your MT5_BRIDGE_KEY (if you are running this locally/sandbox, the 
+   default is "agaba-demo-key").
+
+--------------------------------------------------------------------------------
+PHASE 2: CONFIGURE MT5
+--------------------------------------------------------------------------------
+1. Open your MetaTrader 5 terminal and log into your FP Markets account 
+   (File -> Login to Trade Account).
+2. In the top menu, go to: Tools -> Options -> "Expert Advisors" tab.
+3. Check the box: "Allow algorithmic trading".
+4. Check the box: "Allow WebRequest for listed URL".
+5. Click the green "+" icon and type in the EXACT URL of your web app 
+   (e.g., https://your-agaba-app.com). Do not include a trailing slash.
+6. Click OK.
+   *CRITICAL*: If you skip steps 4-5, MT5 will block the EA from talking to 
+   the app and you will get an "Error 4060" in the Experts tab.
+
+--------------------------------------------------------------------------------
+PHASE 3: INSTALL THE EA
+--------------------------------------------------------------------------------
+1. Download the fixed `Agaba005Bridge.mq5` file from your web dashboard.
+2. In MT5, go to: File -> Open Data Folder.
+3. Open the "MQL5" folder, then open the "Experts" folder.
+4. Paste the `Agaba005Bridge.mq5` file here.
+5. In MT5, open the Navigator panel (Ctrl+N), right-click on "Expert Advisors", 
+   and select "Refresh".
+6. Right-click `Agaba005Bridge` -> click "Modify". This opens MetaEditor.
+7. In MetaEditor, click "Compile" (or press F7). It should compile with 
+   0 errors and 0 warnings. Close MetaEditor.
+
+--------------------------------------------------------------------------------
+PHASE 4: ACTIVATE THE BRIDGE
+--------------------------------------------------------------------------------
+1. Open any chart (e.g., EURUSD on M5).
+2. Drag the `Agaba005Bridge` EA from the Navigator onto the chart.
+3. In the pop-up window, go to the "Inputs" tab:
+   - ApiUrl: Paste your app's URL (e.g., https://your-agaba-app.com)
+   - ApiKey: Type your bridge key (e.g., agaba-demo-key)
+   - DryRun: Set to 'true' for the first day (optional, protects capital while testing)
+4. Click OK.
+5. Ensure the "Algo Trading" button on the top MT5 toolbar is pressed (green).
+6. Look at the top-left of your MT5 chart. You should see a banner:
+   "AGABA005 BRIDGE | LINK UP | HB #..."
+   If it says "LINK DOWN", check the "Experts" tab at the bottom for errors.
+
+--------------------------------------------------------------------------------
+PHASE 5: LINK THE ENGINE
+--------------------------------------------------------------------------------
+1. Go back to your AGABA005 web dashboard.
+2. Look at the "MT5 bridge" panel on the right side. It should now say:
+   "TERMINAL CONNECTED · LIVE" and show your account equity.
+3. Click "MT5 LINKED" under Execution Mode.
+4. DONE. The bot is now consuming your broker's live prices and will route 
+   all qualified setups to MT5.
+
+--------------------------------------------------------------------------------
+TROUBLESHOOTING
+--------------------------------------------------------------------------------
+- "Error 4060" in MT5 Experts tab: You forgot to add the URL to the WebRequest 
+  whitelist in Tools -> Options.
+- Link Stale / Disconnected on the web UI: MT5 was closed, your computer went 
+  to sleep, or the Algo Trading button is turned off. 
+- "Symbol not available" in MT5 Experts tab: Your broker uses different symbol 
+  names (e.g., XAUUSDc instead of XAUUSD). Update the "InpSymbols" list in 
+  the EA inputs to match your broker's exact Market Watch names.
